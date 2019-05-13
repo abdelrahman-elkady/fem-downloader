@@ -1,4 +1,9 @@
-const { createDirSync, makeSlug } = require('../helpers');
+const path = require('path');
+const { createDirSync, makeSlug } = require(path.join(
+  __dirname,
+  '..',
+  'helpers'
+));
 const { existsSync, rmdirSync } = require('fs');
 const invalidCourseTitles = ['0-Javascript: The Hard Parts'];
 

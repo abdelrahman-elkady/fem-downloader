@@ -37,9 +37,10 @@ const questions = [
     name: 'ratelimit',
     choices: [
       { name: '100Kb', value: 100 },
+      { name: '150Kb', value: 150 },
+      { name: '200Kb', value: 200 },
       { name: '250Kb', value: 250 },
       { name: '500Kb', value: 500 },
-      { name: '1Mb', value: 1024 },
       new inquirer.Separator(),
       { name: 'None (this is not recommended!)', value: -1 }
     ]

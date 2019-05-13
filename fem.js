@@ -1,9 +1,9 @@
+const { createDirSync, makeSlug } = require('./helpers');
 const Async = require('crocks/Async');
 const Either = require('crocks/Either');
 const constant = require('crocks/combinators/constant');
 const fs = require('fs');
 const https = require('https');
-const slugify = require('slugify');
 const { Left, Right } = Either;
 const _cliProgress = require('cli-progress');
 const randomstring = require('randomstring');
@@ -65,9 +65,7 @@ const buildDirTree = (courseSlug, fromLesson = '') => (page) =>
         return Promise.resolve(result);
       });
 
-      const newKeys = lessons.map((o) =>
-        slugify(Object.keys(o)[0].toLowerCase())
-      );
+      const newKeys = lessons.map((o) => makeSlug(Object.keys(o)[0]));
       {
         let slugLessons = lessons
           .map((l, index) => ({
@@ -88,10 +86,11 @@ const buildDirTree = (courseSlug, fromLesson = '') => (page) =>
 
         if (!fs.existsSync(courseSlug)) fs.mkdirSync(courseSlug);
 
+        // Creates one folder per lesson group
         slugLessons
           .map((lesson) => lesson.title)
           .map((title) => `./${courseSlug}/${title}`)
-          .map((dir) => (!fs.existsSync(dir) ? fs.mkdirSync(dir) : null));
+          .map(createDirSync);
 
         res({ page, slugLessons });
       }

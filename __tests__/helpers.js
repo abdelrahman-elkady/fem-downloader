@@ -1,4 +1,4 @@
-const { createDirSync, makeSlug } = require('../helpers.js');
+const { createDirSync, makeSlug } = require('../helpers');
 const { existsSync, rmdirSync } = require('fs');
 const invalidCourseTitles = ['0-Javascript: The Hard Parts'];
 

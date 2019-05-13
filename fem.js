@@ -6,6 +6,8 @@ const https = require('https');
 const slugify = require('slugify');
 const { Left, Right } = Either;
 const _cliProgress = require('cli-progress');
+const randomstring = require('randomstring');
+const ratelimit = require('ratelimit');
 
 const stringToEither = (s) => (s.length ? Right(s) : Left(s));
 
@@ -19,7 +21,7 @@ const femLogin = (username, password) => (page) => {
     (async function() {
       try {
         await page.type('#username', username, { delay: 50 });
-        await page.type('#password', 'dash-dash-432', { delay: 50 });
+        await page.type('#password', randomstring.generate(12), { delay: 50 });
         await page.type('#password', String.fromCharCode(13));
         await page.waitForSelector('div.Message.MessageAlert', { timeout: 0 });
         await page.type('#password', password, { delay: 50 });
@@ -101,7 +103,8 @@ const downloadVideoLesson = (page) => async (
   index,
   courseSlug,
   baseUrl,
-  lessonUrl
+  lessonUrl,
+  rateLimit
 ) => {
   await page.goto(`${baseUrl}${lessonUrl}`, {
     waitUnil: ['load', 'domcontentloaded', 'networkidle0']
@@ -124,6 +127,9 @@ const downloadVideoLesson = (page) => async (
 
   return new Promise((resolve, reject) =>
     https.get(src, function(resp) {
+      if (rateLimit !== -1) {
+        ratelimit(resp, rateLimit * 1024);
+      }
       console.log(
         `\n${new Date().toLocaleTimeString()}: Downloading: ${index}-${lessonTitle}`
       );
@@ -150,7 +156,10 @@ const downloadVideoLesson = (page) => async (
   );
 };
 
-const downloadVideos = (url, courseSlug) => ({ page, slugLessons }) => {
+const downloadVideos = (url, courseSlug, ratelimit) => ({
+  page,
+  slugLessons
+}) => {
   return Async(async (rej, res) => {
     const downloadLesson = downloadVideoLesson(page);
 
@@ -159,8 +168,19 @@ const downloadVideos = (url, courseSlug) => ({ page, slugLessons }) => {
       let group = lessonGroup.title;
       let index = 1;
       for (const lesson of lessons) {
-        await downloadLesson(group, index, courseSlug, url, lesson);
-        index = index + 1;
+        try {
+          await downloadLesson(
+            group,
+            index,
+            courseSlug,
+            url,
+            lesson,
+            ratelimit
+          );
+          index = index + 1;
+        } catch (e) {
+          rej(e.message);
+        }
       }
     }
     res('YEEEEEAH!');

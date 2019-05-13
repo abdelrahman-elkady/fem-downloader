@@ -52,6 +52,12 @@ As of today, 07/25/2018, I have been using it to download a few short and long c
 Nevertheless, if you find any bugs or if you'd like to ask for new functionalities, feel free to open an issue and I will do my best to give you my support.
 Lessons are downloaded serially so the speed of the whole process will heavily depend on your internet connection.
 
+## ⚠ Warning
+
+I strongly encourage you to **limit the download bandwidth** at 100Kb/250Kb to reduce the risk of your account being suspended. See issue [#3](https://github.com/cristian-gabbanini/fem-downloader/issues/3).
+
+In addition I do not encourage you to download **more than 1 course at a time** (the disclaimer below is clear about what the purpose of this tool is, so read it carefully and, if you have any doubts, I suggest you to read the FrontendMasters TOS).
+
 ## Disclaimer
 
 This is not intended as a means of software piracy.

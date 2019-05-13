@@ -3,7 +3,7 @@
 [![License][licence-badge]](#license)
 [![Min NodeJs][node-badge]][node]
 [![Dependencies][dependencies-badge]][dependencies-list]
-[![Build Status][build-status]][repo-url]
+[![buddy pipeline][buddy-badge]][buddy-pipeline]
 [![Codacy Badge][codacy-badge]][codacy-url]
 
 Based on Nodejs and Puppeteer, you can launch it from the command line providing your credentials and it will download the course of your choice.
@@ -90,7 +90,7 @@ copies or substantial portions of the Software.
 [node]: https://nodejs.org/en/
 [dependencies-badge]: https://david-dm.org/cristian-gabbanini/fem-downloader.svg
 [dependencies-list]: https://david-dm.org/cristian-gabbanini/fem-downloader
-[build-status]: https://travis-ci.com/cristian-gabbanini/fem-downloader.svg?branch=master
-[repo-url]: https://travis-ci.com/cristian-gabbanini/fem-downloader
+[buddy-badge]: https://app.buddy.works/cristiangabbanini/fem-downloader/pipelines/pipeline/187504/badge.svg?token=6e28f37dda78c47b32e6142a0d1431bc15100963789a2ae7ceb97f02e61f7ee6
+[buddy-pipeline]: https://app.buddy.works/cristiangabbanini/fem-downloader/pipelines/pipeline/187504
 [codacy-badge]: https://api.codacy.com/project/badge/Grade/e52f1ff64e934b7d9896fe8edbf3bdfc
 [codacy-url]: https://www.codacy.com/app/cristian-gabbanini/fem-downloader?utm_source=github.com&utm_medium=referral&utm_content=cristian-gabbanini/fem-downloader&utm_campaign=Badge_Grade

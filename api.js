@@ -2,14 +2,15 @@ const puppeteer = require('puppeteer');
 const Async = require('crocks/Async');
 const pipeK = require('crocks/helpers/pipeK');
 const Persist = require('./persist').Persist;
-const defaultUserAgent =
-  'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/67.0.3396.79 Safari/537.36';
+const UserAgent = require('user-agents');
 const curry = require('ramda/src/curry');
 const compose = require('ramda/src/compose');
 const Maybe = require('crocks/Maybe');
 const { Nothing } = Maybe;
 const I = (a) => a;
 const { restore, persist } = Persist;
+const userAgent = new UserAgent();
+const { userAgent: defaultUserAgent } = userAgent;
 
 // identityToAsync :: a → Async a
 const identityToAsync = compose(

@@ -67,6 +67,10 @@ this kind of usage.
 
 The sole purpose of this piece of software is to provide a way to Frontend Masters subscribers to download the courses they like more for **exclusive personal use**.
 
+## 🌟 Star the repo
+
+If you like this software or you think it's useful you are welcome to like it on [Github](https://github.com/cristian-gabbanini/fem-downloader)
+
 ## License
 
 ```bash

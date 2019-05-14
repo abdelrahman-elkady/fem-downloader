@@ -20,9 +20,8 @@
     "javascript"
   ],
   "scripts": {
-    "prettier": "prettier",
     "build": "./build.sh",
-    "test": "yarn jest __test.*help*"
+    "test": "yarn jest"
   },
   "dependencies": {
     "cli-progress": "^2.1.1",

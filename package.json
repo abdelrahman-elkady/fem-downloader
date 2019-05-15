@@ -1,6 +1,6 @@
 {
   "name": "frontend-masters-course-downloader",
-  "version": "1.0.22",
+  "version": "1.0.23",
   "description": "Course downloader for FrontendMasters.",
   "author": "Cristian Gabbanini",
   "main": "fem-downloader.js",
@@ -12,12 +12,15 @@
   },
   "keywords": [
     "downloader",
-    "frontend-masters",
+    "download",
     "puppetter",
     "cli",
-    "video-downloader",
     "node-js",
-    "javascript"
+    "javascript",
+    "lesson",
+    "recaptcha",
+    "frontend",
+    "masters"
   ],
   "scripts": {
     "build": "./build.sh",

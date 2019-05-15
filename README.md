@@ -13,7 +13,8 @@ Based on Nodejs and Puppeteer, you can launch it from the command line providing
 From the project root type:
 
 ```
-yarn install
+npm install
+# or: yarn install
 ```
 
 Note that Puppeteer installation will download a version of Chromium compatible with your os.
@@ -23,11 +24,13 @@ Note that Puppeteer installation will download a version of Chromium compatible 
 Just run the following command:
 
 ```
-node fem-downloader.js
+npm run fem-downloader
+# or: yarn fem-downloader
 
 ? Please insert your username: ....
 ? Please insert your password: ....
 ? Please insert course slug: ....
+? Download bandwidth limit: ....
 ? Launch Puppeteer in headless mode? (Y/n):
 ? Are the information correct? (Y/n):
 ```

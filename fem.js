@@ -8,7 +8,7 @@ const { Left, Right } = Either;
 const _cliProgress = require('cli-progress');
 const randomstring = require('randomstring');
 const ratelimit = require('ratelimit');
-
+const chalk = require('chalk');
 const stringToEither = (s) => (s.length ? Right(s) : Left(s));
 
 const femGoto = (url) => (page) =>
@@ -19,6 +19,7 @@ const femGoto = (url) => (page) =>
 const femLogin = (username, password) => (page) => {
   return Async((rej, res) => {
     (async function() {
+      console.log(chalk.grey('\n\nLogging in to FrontendMasters'));
       try {
         await page.type('#username', username, { delay: 50 });
         await page.type('#password', randomstring.generate(12), { delay: 50 });
@@ -27,7 +28,9 @@ const femLogin = (username, password) => (page) => {
         await page.type('#password', password, { delay: 50 });
         await page.type('#password', String.fromCharCode(13));
         await page.waitForSelector('h1.DashboardHeader', { timeout: 0 });
+        console.log(chalk.green('✅ Login successful!'));
       } catch (e) {
+        console.log(chalk.red('❌ Could not login'));
         rej(e);
       }
       res(page);
@@ -130,7 +133,9 @@ const downloadVideoLesson = (page) => async (
         ratelimit(resp, rateLimit * 1024);
       }
       console.log(
-        `\n${new Date().toLocaleTimeString()}: Downloading: ${index}-${lessonTitle}`
+        chalk.dim(
+          `\n${new Date().toLocaleTimeString()}: Downloading: ${index}-${lessonTitle}`
+        )
       );
 
       const bytesLength = parseInt(resp.headers['content-length'] / 8);

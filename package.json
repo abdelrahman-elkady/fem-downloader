@@ -10,6 +10,9 @@
     "type": "git",
     "url": "git://github.com/cristian-gabbanini/fem-downloader.git"
   },
+  "bin": {
+    "fem-downloader": "./cli.js"
+  },
   "keywords": [
     "downloader",
     "download",
@@ -38,6 +41,7 @@
     "user-agents": "^1.0.255"
   },
   "devDependencies": {
+    "chalk": "^2.4.2",
     "eslint": "^5.16.0",
     "eslint-config-prettier": "^4.2.0",
     "eslint-config-recommended": "^4.0.0",

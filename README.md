@@ -24,8 +24,8 @@ Note that Puppeteer installation will download a version of Chromium compatible 
 Just run the following command:
 
 ```
-npm run fem-downloader
-# or: yarn fem-downloader
+npm run fem
+# or: yarn fem
 
 ? Please insert your username: ....
 ? Please insert your password: ....

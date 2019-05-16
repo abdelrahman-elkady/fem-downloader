@@ -77,7 +77,7 @@ const questions = [
 ];
 
 (async () => {
-  if (!fs.existsSync('./courses.js')) {
+  if (!path.join(__dirname, 'courses')) {
     // Downloads the course list (which is public)
     // Login is not required
     console.log(

@@ -1,4 +1,5 @@
 const fs = require('fs');
+const path = require('path');
 const { init } = require('./api');
 const {
   femLogin,
@@ -91,12 +92,12 @@ const questions = [
     });
     const courseSlugs = await downloadCourseList(page);
     fs.writeFileSync(
-      './courses.js',
+      path.join(__dirname, 'courses'),
       `module.exports = ${JSON.stringify(courseSlugs, null, 2)}`
     );
     await browser.close();
   }
-  const courses = require('./courses');
+  const courses = require(path.join(__dirname, 'courses'));
 
   // Adds the source property to the inquirer question
   questions[2].source = function(_, input) {

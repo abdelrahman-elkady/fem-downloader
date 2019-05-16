@@ -10,7 +10,14 @@ Based on Nodejs and Puppeteer, you can launch it from the command line providing
 
 ## Installation
 
-From the project root type:
+Create a directory on your disk:
+
+```
+mkdir -p fmdl
+cd fmdl
+```
+
+From inside the directory type:
 
 ```
 npm install

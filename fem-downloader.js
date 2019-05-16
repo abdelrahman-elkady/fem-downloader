@@ -1,8 +1,22 @@
+const fs = require('fs');
 const { init } = require('./api');
-const { femLogin, femGoto, buildDirTree, downloadVideos } = require('./fem');
+const {
+  femLogin,
+  femGoto,
+  buildDirTree,
+  downloadVideos,
+  setup,
+  downloadCourseList
+} = require('./fem');
 const inquirer = require('inquirer');
+const chalk = require('chalk');
+const fuzzy = require('fuzzy');
 const log = console.log.bind(console);
 
+inquirer.registerPrompt(
+  'autocomplete',
+  require('inquirer-autocomplete-prompt')
+);
 const { getPage, closeBrowser } = init();
 
 const flow = (url) => (
@@ -30,7 +44,11 @@ const questions = [
     name: 'password',
     mask: '*'
   },
-  { type: 'input', message: 'Please insert course slug:', name: 'slug' },
+  {
+    type: 'autocomplete',
+    message: 'Please insert course slug:',
+    name: 'slug'
+  },
   {
     type: 'list',
     message: 'Download bandwidth limit:',
@@ -58,6 +76,38 @@ const questions = [
 ];
 
 (async () => {
+  if (!fs.existsSync('./courses.js')) {
+    // Downloads the course list (which is public)
+    // Login is not required
+    console.log(
+      chalk.yellow(
+        "Downloading courses list, please be patient: it won't take long\n"
+      )
+    );
+    const { browser, page } = await setup();
+    await page.goto('https://frontendmasters.com/courses/', {
+      timeout: 25000,
+      waitUntil: ['domcontentloaded']
+    });
+    const courseSlugs = await downloadCourseList(page);
+    fs.writeFileSync(
+      './courses.js',
+      `module.exports = ${JSON.stringify(courseSlugs, null, 2)}`
+    );
+    await browser.close();
+  }
+  const courses = require('./courses');
+
+  // Adds the source property to the inquirer question
+  questions[2].source = function(_, input) {
+    const filtered = fuzzy
+      .filter(input, courses)
+      .map((res) => res.string)
+      .filter(Boolean);
+
+    return Promise.resolve(filtered);
+  };
+
   const {
     username,
     password,

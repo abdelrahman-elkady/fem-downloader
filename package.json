@@ -1,7 +1,7 @@
 {
   "name": "frontend-masters-course-downloader",
-  "version": "1.0.27",
-  "description": "Download Frontend Masters courses",
+  "version": "1.1.0",
+  "description": "Download Frontend Masters courses and lessons.",
   "author": "Cristian Gabbanini",
   "main": "fem-downloader.js",
   "homepage": "https://github.com/cristian-gabbanini/fem-downloader",
@@ -27,12 +27,15 @@
   ],
   "scripts": {
     "build": "./build.sh",
-    "test": "yarn jest"
+    "test": "env-cmd -f ./.env.test jest --silent",
+    "test:ci": "jest --silent"
   },
   "dependencies": {
     "cli-progress": "^2.1.1",
     "crocks": "^0.11.1",
+    "fuzzy": "^0.1.3",
     "inquirer": "^6.3.1",
+    "inquirer-autocomplete-prompt": "^1.0.1",
     "puppeteer": "^1.6.0",
     "ramda": "^0.26.1",
     "randomstring": "^1.1.5",
@@ -42,6 +45,7 @@
   },
   "devDependencies": {
     "chalk": "^2.4.2",
+    "env-cmd": "^9.0.1",
     "eslint": "^5.16.0",
     "eslint-config-prettier": "^4.2.0",
     "eslint-config-recommended": "^4.0.0",

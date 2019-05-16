@@ -9,12 +9,46 @@ const _cliProgress = require('cli-progress');
 const randomstring = require('randomstring');
 const ratelimit = require('ratelimit');
 const chalk = require('chalk');
+const puppeteer = require('puppeteer');
+const UserAgent = require('user-agents');
 const stringToEither = (s) => (s.length ? Right(s) : Left(s));
 
 const femGoto = (url) => (page) =>
   Async((rej, res) => {
     page.goto(url).then((a) => res(page));
   });
+
+const setup = async () => {
+  const userAgent = new UserAgent();
+  const browser = await puppeteer.launch({
+    headless: true,
+    slowMo: 150,
+    args: ['--no-sandbox']
+  });
+  const page = await browser.newPage();
+  await page.setJavaScriptEnabled(true);
+  await page.setUserAgent(userAgent.userAgent);
+  await page.goto('https://frontendmasters.com/login/', {
+    timeout: 25000,
+    waitUntil: ['domcontentloaded']
+  });
+  const fl = femLogin(process.env.FM_LOGIN, process.env.FM_PASSWORD)(page);
+  return { browser, page, login: () => fl.toPromise() };
+};
+
+const downloadCourseList = async (page) => {
+  const slugs = await page.evaluate(() => {
+    const anchors = document.querySelectorAll('h2.title a');
+    return Array.from(anchors)
+      .map((a) => a.href)
+      .map((url) =>
+        url.replace('https://frontendmasters.com/courses/', '').replace('/', '')
+      )
+      .sort((s1, s2) => s1.localeCompare(s2));
+  });
+
+  return slugs;
+};
 
 const femLogin = (username, password) => (page) => {
   return Async((rej, res) => {
@@ -192,8 +226,10 @@ const downloadVideos = (url, courseSlug, ratelimit) => ({
 };
 
 module.exports = {
+  femGoto,
   femLogin,
   buildDirTree,
+  downloadCourseList,
   downloadVideos,
-  femGoto
+  setup
 };

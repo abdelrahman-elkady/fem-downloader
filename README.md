@@ -10,7 +10,14 @@ Based on Nodejs and Puppeteer, you can launch it from the command line providing
 
 ## Installation
 
-From the project root type:
+Create a directory on your disk:
+
+```
+mkdir -p fmdl
+cd fmdl
+```
+
+From inside the directory type:
 
 ```
 npm install
@@ -24,8 +31,7 @@ Note that Puppeteer installation will download a version of Chromium compatible 
 Just run the following command:
 
 ```
-npm run fem-downloader
-# or: yarn fem-downloader
+npx fem-downloader
 
 ? Please insert your username: ....
 ? Please insert your password: ....

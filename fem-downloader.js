@@ -12,6 +12,8 @@ const {
 const inquirer = require('inquirer');
 const chalk = require('chalk');
 const fuzzy = require('fuzzy');
+const Persist = require('./persist').Persist;
+const { restore } = Persist;
 const log = console.log.bind(console);
 
 inquirer.registerPrompt(
@@ -103,6 +105,7 @@ const questions = [
     );
     await browser.close();
   }
+
   const courses = require(path.join(__dirname, 'courses'));
 
   // Adds the source property to the inquirer question
@@ -138,5 +141,12 @@ const questions = [
     headless,
     subtitles,
     from
-  ).fork((e) => log('Error: ', e), (s) => log('Download completed!'));
+  ).fork(
+    async (e) => {
+      log('Error: ', e);
+
+      await restore('browser').close();
+    },
+    (s) => log('Download completed!')
+  );
 })();

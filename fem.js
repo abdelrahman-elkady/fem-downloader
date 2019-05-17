@@ -1,4 +1,4 @@
-const { createDirSync, makeSlug } = require('./helpers');
+const { createDirSync, makeSlug, isTest, log } = require('./helpers');
 const Async = require('crocks/Async');
 const Either = require('crocks/Either');
 const constant = require('crocks/combinators/constant');
@@ -8,7 +8,6 @@ const { Left, Right } = Either;
 const _cliProgress = require('cli-progress');
 const randomstring = require('randomstring');
 const ratelimit = require('ratelimit');
-const chalk = require('chalk');
 const puppeteer = require('puppeteer');
 const UserAgent = require('user-agents');
 const stringToEither = (s) => (s.length ? Right(s) : Left(s));
@@ -21,7 +20,7 @@ const femGoto = (url) => (page) =>
 const setup = async () => {
   const userAgent = new UserAgent();
   const browser = await puppeteer.launch({
-    headless: true,
+    headless: isTest ? process.env.HEADLESS : true,
     slowMo: 150,
     args: ['--no-sandbox']
   });
@@ -80,11 +79,7 @@ const downloadSubtitles = async (
 
     return new Promise((resolve, reject) => {
       https.get(subtitlesUrl, function(resp) {
-        console.log(
-          chalk.dim(
-            `\n${new Date().toLocaleTimeString()}: Downloading: ${index}-${lesson}.web_vtt (subtitles)`
-          )
-        );
+        log.dim(`Download: ${index}-${lesson}.web_vtt (subtitles)`);
 
         resp.on('data', function(chunk) {
           subtitlesFile.write(chunk);
@@ -92,18 +87,15 @@ const downloadSubtitles = async (
 
         resp.on('end', function() {
           subtitlesFile.end();
-          console.log(
-            chalk.green(
-              `${new Date().toLocaleTimeString()}: ✅ Downloading succesful!`
-            )
-          );
+          log.green(`✅ Download succesful!`);
+
           resolve(true);
         });
       });
     });
   } catch (e) {
     // Exceptions here shouldn't block the course download
-    console.log(chalk.red(`\n❌ Couldn't download the subtitles.`));
+    log.red(`❌ Couldn't download the subtitles.`);
     return page;
   }
 };
@@ -111,7 +103,8 @@ const downloadSubtitles = async (
 const femLogin = (username, password) => (page) => {
   return Async((rej, res) => {
     (async function() {
-      console.log(chalk.grey('\n\nLogging in to FrontendMasters'));
+      console.log('\n\n');
+      log.grey('Logging in to FrontendMasters');
       try {
         await page.type('#username', username, { delay: 50 });
         await page.type('#password', randomstring.generate(12), { delay: 50 });
@@ -119,11 +112,11 @@ const femLogin = (username, password) => (page) => {
         await page.waitForSelector('div.Message.MessageAlert', { timeout: 0 });
         await page.type('#password', password, { delay: 50 });
         await page.type('#password', String.fromCharCode(13));
-        await page.waitForSelector('h1.DashboardHeader', { timeout: 0 });
-        console.log(chalk.green('✅ Login successful!'));
+        await page.waitForSelector('h1.DashboardHeader', { timeout: 500 });
+        log.green('✅ Login successful!');
       } catch (e) {
-        console.log(chalk.red('❌ Could not login'));
-        rej(e);
+        log.red('❌ Could not login');
+        rej(e.message);
       }
       res(page);
     })();
@@ -236,11 +229,7 @@ const downloadVideoLesson = (page) => async (
       if (rateLimit !== -1) {
         ratelimit(resp, rateLimit * 1024);
       }
-      console.log(
-        chalk.dim(
-          `\n${new Date().toLocaleTimeString()}: Downloading: ${index}-${lessonTitle}`
-        )
-      );
+      log.dim(`Download: ${index}-${lessonTitle}`);
 
       const bytesLength = parseInt(resp.headers['content-length'] / 8);
 
@@ -258,6 +247,7 @@ const downloadVideoLesson = (page) => async (
         bar.update(bytesLength);
         bar.stop();
         file.end();
+        log.green('✅ Download successful!');
         resolve(true);
       });
     })

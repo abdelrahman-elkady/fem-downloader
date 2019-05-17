@@ -92,7 +92,7 @@ const questions = [
     });
     const courseSlugs = await downloadCourseList(page);
     fs.writeFileSync(
-      path.join(__dirname, 'courses'),
+      path.join(__dirname, 'courses.js'),
       `module.exports = ${JSON.stringify(courseSlugs, null, 2)}`
     );
     await browser.close();

@@ -21,7 +21,7 @@ const femGoto = (url) => (page) =>
 const setup = async () => {
   const userAgent = new UserAgent();
   const browser = await puppeteer.launch({
-    headless: false,
+    headless: true,
     slowMo: 150,
     args: ['--no-sandbox']
   });

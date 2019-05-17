@@ -28,7 +28,13 @@
   "scripts": {
     "build": "./build.sh",
     "test": "env-cmd -f ./.env.test jest --silent",
-    "test:ci": "jest --silent"
+    "test:ci": "jest --silent",
+    "test:pre-push": "jest ./package.json.test.js --silent"
+  },
+  "husky": {
+    "hooks": {
+      "pre-commit": "exit 0"
+    }
   },
   "dependencies": {
     "cli-progress": "^2.1.1",
@@ -56,8 +62,10 @@
     "eslint-plugin-prettier": "^3.0.1",
     "eslint-plugin-promise": "^4.1.1",
     "eslint-plugin-standard": "^4.0.0",
+    "husky": "^2.3.0",
     "inquirer-autocomplete-prompt": "^1.0.1",
     "jest": "^24.8.0",
-    "prettier": "^1.13.7"
+    "prettier": "^1.13.7",
+    "rimraf": "^2.6.3"
   }
 }

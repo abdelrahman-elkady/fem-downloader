@@ -8,8 +8,9 @@
 
 Based on Nodejs and Puppeteer, you can launch it from the command line providing your credentials and it will download the course of your choice.
 
-💓 New **auto-completion** of course titles!
-ewrweerwerwerewr
+💓 New feature: **auto-completion** of course titles!
+
+💓 New feature: **subtitles downloads**
 
 ## Installation
 
@@ -51,6 +52,8 @@ Then, you'll be prompted with a few questions, i.e. :
 Once the download starts you'll be shown a progress bar for the current lesson:
 
 ```
+14:13:31: Downloading 8-removing-bad-links subtitles.
+
 11:23:53: Downloading video: 8-removing-bad-links
  █████████░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░ 21% | ETA: 56s | 876370/4080650
 ```

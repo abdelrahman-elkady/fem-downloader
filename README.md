@@ -8,6 +8,9 @@
 
 Based on Nodejs and Puppeteer, you can launch it from the command line providing your credentials and it will download the course of your choice.
 
+💓 New **auto-completion** of course titles!
+ewrweer
+
 ## Installation
 
 Create a directory on your disk:
@@ -28,11 +31,15 @@ Note that Puppeteer installation will download a version of Chromium compatible 
 
 ## Usage
 
-Just run the following command:
+Run the following command:
 
 ```
 npx fem-downloader
+```
 
+Then, you'll be prompted with a few questions, i.e. :
+
+```
 ? Please insert your username: ....
 ? Please insert your password: ....
 ? Please insert course slug: ....

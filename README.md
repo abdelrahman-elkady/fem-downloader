@@ -9,7 +9,7 @@
 Based on Nodejs and Puppeteer, you can launch it from the command line providing your credentials and it will download the course of your choice.
 
 💓 New **auto-completion** of course titles!
-ewrweer
+ewrweerwerwerewr
 
 ## Installation
 

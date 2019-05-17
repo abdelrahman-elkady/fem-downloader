@@ -21,7 +21,7 @@ const femGoto = (url) => (page) =>
 const setup = async () => {
   const userAgent = new UserAgent();
   const browser = await puppeteer.launch({
-    headless: true,
+    headless: false,
     slowMo: 150,
     args: ['--no-sandbox']
   });
@@ -48,6 +48,64 @@ const downloadCourseList = async (page) => {
   });
 
   return slugs;
+};
+
+const downloadSubtitles = async (
+  page,
+  { group, index, courseSlug, lesson }
+) => {
+  await page.waitFor(1000);
+
+  try {
+    const subtitlesUrl = await page.evaluate((courseIndex) => {
+      const ogImage = document.head.querySelector("meta[property='og:image']");
+      const lessonSlugs = document.querySelectorAll(
+        'nav > ul.FMPlayerScrolling > li:not(.lesson-group)'
+      );
+      const lessonSlug = lessonSlugs[courseIndex].getAttribute('class');
+      const ogImageContent = ogImage.getAttribute('content');
+      const partialUrl = ogImageContent.substring(
+        0,
+        ogImageContent.lastIndexOf('/')
+      );
+
+      return Promise.resolve(
+        `${partialUrl}/${courseIndex}-${lessonSlug}.web_vtt`
+      );
+    }, index);
+
+    const subtitlesFile = fs.createWriteStream(
+      `./${courseSlug}/${group}/${index}-${lesson}.web_vtt`
+    );
+
+    return new Promise((resolve, reject) => {
+      https.get(subtitlesUrl, function(resp) {
+        console.log(
+          chalk.dim(
+            `\n${new Date().toLocaleTimeString()}: Downloading: ${index}-${lesson}.web_vtt (subtitles)`
+          )
+        );
+
+        resp.on('data', function(chunk) {
+          subtitlesFile.write(chunk);
+        });
+
+        resp.on('end', function() {
+          subtitlesFile.end();
+          console.log(
+            chalk.green(
+              `${new Date().toLocaleTimeString()}: ✅ Downloading succesful!`
+            )
+          );
+          resolve(true);
+        });
+      });
+    });
+  } catch (e) {
+    // Exceptions here shouldn't block the course download
+    console.log(chalk.red(`\n❌ Couldn't download the subtitles.`));
+    return page;
+  }
 };
 
 const femLogin = (username, password) => (page) => {
@@ -140,7 +198,8 @@ const downloadVideoLesson = (page) => async (
   courseSlug,
   baseUrl,
   lessonUrl,
-  rateLimit
+  rateLimit,
+  subtitles
 ) => {
   await page.goto(`${baseUrl}${lessonUrl}`, {
     waitUnil: ['load', 'domcontentloaded', 'networkidle0']
@@ -154,9 +213,20 @@ const downloadVideoLesson = (page) => async (
   });
 
   await page.click('div.vjs-has-started');
+
   const lessonTitles = lessonUrl.split('/');
 
   const lessonTitle = lessonTitles[lessonTitles.length - 2];
+
+  if (subtitles) {
+    await downloadSubtitles(page, {
+      group: lessonGroup,
+      index,
+      courseSlug,
+      lesson: lessonTitle
+    });
+  }
+
   const file = fs.createWriteStream(
     `./${courseSlug}/${lessonGroup}/${index}-${lessonTitle}.webm`
   );
@@ -194,17 +264,19 @@ const downloadVideoLesson = (page) => async (
   );
 };
 
-const downloadVideos = (url, courseSlug, ratelimit) => ({
+const downloadVideos = (url, courseSlug, ratelimit, subtitles = false) => ({
   page,
   slugLessons
 }) => {
   return Async(async (rej, res) => {
     const downloadLesson = downloadVideoLesson(page);
 
+    let index = 0;
+
     for (const lessonGroup of slugLessons) {
       let lessons = lessonGroup.lessons;
       let group = lessonGroup.title;
-      let index = 1;
+
       for (const lesson of lessons) {
         try {
           await downloadLesson(
@@ -213,7 +285,8 @@ const downloadVideos = (url, courseSlug, ratelimit) => ({
             courseSlug,
             url,
             lesson,
-            ratelimit
+            ratelimit,
+            subtitles
           );
           index = index + 1;
         } catch (e) {
@@ -230,6 +303,7 @@ module.exports = {
   femLogin,
   buildDirTree,
   downloadCourseList,
+  downloadSubtitles,
   downloadVideos,
   setup
 };

@@ -26,13 +26,14 @@ const flow = (url) => (
   courseSlug,
   ratelimit,
   headless,
+  subtitles,
   fromLesson
 ) =>
   getPage(`${url}/login/`, headless)()
     .chain(femLogin(username, password))
     .chain(femGoto(`${url}/courses/${courseSlug}/`))
     .chain(buildDirTree(courseSlug, fromLesson))
-    .chain(downloadVideos(url, courseSlug, ratelimit))
+    .chain(downloadVideos(url, courseSlug, ratelimit, subtitles))
     .chain(closeBrowser);
 
 const femDownload = flow('https://frontendmasters.com');
@@ -63,6 +64,11 @@ const questions = [
       new inquirer.Separator(),
       { name: 'None (this is not recommended!)', value: -1 }
     ]
+  },
+  {
+    type: 'confirm',
+    message: 'Download subtitles? :',
+    name: 'subtitles'
   },
   {
     type: 'confirm',
@@ -116,6 +122,7 @@ const questions = [
     confirmation,
     headless,
     ratelimit,
+    subtitles,
     from = ''
   } = await inquirer.prompt(questions);
 
@@ -123,8 +130,13 @@ const questions = [
     return;
   }
 
-  femDownload(username, password, slug, ratelimit, headless, from).fork(
-    (e) => log('Error: ', e),
-    (s) => log('Download completed!')
-  );
+  femDownload(
+    username,
+    password,
+    slug,
+    ratelimit,
+    headless,
+    subtitles,
+    from
+  ).fork((e) => log('Error: ', e), (s) => log('Download completed!'));
 })();

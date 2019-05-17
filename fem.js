@@ -1,4 +1,4 @@
-const { createDirSync, makeSlug } = require('./helpers');
+const { createDirSync, makeSlug, cache } = require('./helpers');
 const Async = require('crocks/Async');
 const Either = require('crocks/Either');
 const constant = require('crocks/combinators/constant');
@@ -187,6 +187,9 @@ const buildDirTree = (courseSlug, fromLesson = '') => (page) =>
           .map((title) => `./${courseSlug}/${title}`)
           .map(createDirSync);
 
+        cache.put('courseSlug', courseSlug);
+        cache.put('dirTree', slugLessons);
+
         res({ page, slugLessons });
       }
     })();
@@ -217,6 +220,13 @@ const downloadVideoLesson = (page) => async (
   const lessonTitles = lessonUrl.split('/');
 
   const lessonTitle = lessonTitles[lessonTitles.length - 2];
+
+  cache.put('latestLesson', {
+    url: lessonUrl,
+    title: lessonTitle,
+    group: lessonGroup,
+    index
+  });
 
   if (subtitles) {
     await downloadSubtitles(page, {

@@ -27,6 +27,9 @@ const cache = (function() {
     },
     get(key) {
       return key in currentCache ? currentCache[key] : undefined;
+    },
+    destroy() {
+      fs.unlinkSync(cachePath);
     }
   };
 })();

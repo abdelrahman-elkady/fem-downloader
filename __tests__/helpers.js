@@ -1,10 +1,10 @@
 const { createDirSync, makeSlug } = require('../helpers');
 const { existsSync, rmdirSync } = require('fs');
-const invalidCourseTitles = ['0-Javascript: The Hard Parts'];
+const invalidCourseTitles = ['0-Javascript: The Hard Parts', '4-ui/ux'];
 
 describe('createDirSync: slugifies invalid titles into valid paths', () => {
   invalidCourseTitles
-    .map((title) => makeSlug(title, { remove: /[*+~.()'"!:@]/g }).toLowerCase())
+    .map((title) => makeSlug(title).toLowerCase())
     .forEach((path) => {
       afterEach(() => {
         if (existsSync(`./${path}`)) {

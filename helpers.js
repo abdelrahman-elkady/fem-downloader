@@ -7,7 +7,7 @@ function createDirSync(path) {
 }
 
 function makeSlug(str) {
-  return slugify(str, { remove: /[*+~.()'"!:@]/g }).toLowerCase();
+  return slugify(str, { remove: /[\/*+~.()'"!:@]/g }).toLowerCase();
 }
 
 const cache = (function() {

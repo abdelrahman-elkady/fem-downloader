@@ -94,7 +94,7 @@ const downloadSubtitles = async (
           subtitlesFile.end();
           console.log(
             chalk.green(
-              `${new Date().toLocaleTimeString()}: ✅ Downloading succesful!`
+              `${new Date().toLocaleTimeString()}: ✅ Downloading successful!`
             )
           );
           resolve(true);

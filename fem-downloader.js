@@ -49,7 +49,36 @@ const questions = [
   {
     type: 'autocomplete',
     message: 'Please insert course slug:',
-    name: 'slug'
+    name: 'slug',
+    source: async function(_, input) {
+      if (!fs.existsSync(path.join(__dirname, 'courses.js'))) {
+        // Downloads the course list (which is public)
+        // Login is not required
+        console.log(
+          chalk.yellow(
+            "Downloading courses list, please be patient: it won't take long\n"
+          )
+        );
+        const { browser, page } = await setup();
+        await page.goto('https://frontendmasters.com/courses/', {
+          timeout: 25000,
+          waitUntil: ['domcontentloaded']
+        });
+        const courseSlugs = await downloadCourseList(page);
+        fs.writeFileSync(
+          path.join(__dirname, 'courses.js'),
+          `module.exports = ${JSON.stringify(courseSlugs, null, 2)}`
+        );
+        await browser.close();
+      }
+      const courses = require(path.join(__dirname, 'courses'));
+      const filtered = fuzzy
+        .filter(input, courses)
+        .map((res) => res.string)
+        .filter(Boolean);
+
+      return Promise.resolve(filtered);
+    }
   },
   {
     type: 'list',
@@ -83,38 +112,7 @@ const questions = [
 ];
 
 (async () => {
-  if (!fs.existsSync(path.join(__dirname, 'courses.js'))) {
-    // Downloads the course list (which is public)
-    // Login is not required
-    console.log(
-      chalk.yellow(
-        "Downloading courses list, please be patient: it won't take long\n"
-      )
-    );
-    const { browser, page } = await setup();
-    await page.goto('https://frontendmasters.com/courses/', {
-      timeout: 25000,
-      waitUntil: ['domcontentloaded']
-    });
-    const courseSlugs = await downloadCourseList(page);
-    fs.writeFileSync(
-      path.join(__dirname, 'courses.js'),
-      `module.exports = ${JSON.stringify(courseSlugs, null, 2)}`
-    );
-    await browser.close();
-  }
-  const courses = require(path.join(__dirname, 'courses'));
-
   // Adds the source property to the inquirer question
-  questions[2].source = function(_, input) {
-    const filtered = fuzzy
-      .filter(input, courses)
-      .map((res) => res.string)
-      .filter(Boolean);
-
-    return Promise.resolve(filtered);
-  };
-
   const {
     username,
     password,

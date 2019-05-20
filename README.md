@@ -63,14 +63,6 @@ Once the download starts you'll be shown a progress bar for the current lesson:
 3.  The course will be downloaded into the project root, in its own folder, and each lesson will have its slug name.
 4.  Each lesson group will have its separate folder and each lesson will be prepended with a number reflecting its order.
 
-## Notes
-
-06/05/2019 - Google ReCaptcha is not complaining anymore.
-11/12/2018 - Google ReCaptcha is now preventing the login. Fair enough, it is their right to check user identity. Anyway, to bypass it with a quick and dirty solution I just disabled a timeout which crashed the whole app before you could even log in. So, long story short: the first time you log in you should manually complete the ReCaptcha procedure and the you are good to go. I suggest you to schedule more than 1 course for each download session so to avoid to be presented every time with the ReCaptcha.
-As of today, 07/25/2018, I have been using it to download a few short and long courses and it has been working smoothly.
-Nevertheless, if you find any bugs or if you'd like to ask for new functionalities, feel free to open an issue and I will do my best to give you my support.
-Lessons are downloaded serially so the speed of the whole process will heavily depend on your internet connection.
-
 ## ⚠ Warning
 
 I strongly encourage you to **limit the download bandwidth** at 100Kb/250Kb to reduce the risk of your account being suspended. See issue [#3](https://github.com/cristian-gabbanini/fem-downloader/issues/3).

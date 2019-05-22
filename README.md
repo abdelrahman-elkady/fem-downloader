@@ -24,8 +24,7 @@ cd fmdl
 From inside the directory type:
 
 ```
-npm install
-# or: yarn install
+npm install frontend-masters-course-downloader
 ```
 
 Note that Puppeteer installation will download a version of Chromium compatible with your os.

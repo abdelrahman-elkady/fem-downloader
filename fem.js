@@ -11,6 +11,10 @@ const ratelimit = require('ratelimit');
 const chalk = require('chalk');
 const puppeteer = require('puppeteer');
 const UserAgent = require('user-agents');
+const request = require('request');
+const { promisify } = require('util');
+const cheerio = require('cheerio');
+
 const stringToEither = (s) => (s.length ? Right(s) : Left(s));
 
 const femGoto = (url) => (page) =>
@@ -36,16 +40,18 @@ const setup = async () => {
   return { browser, page, login: () => fl.toPromise() };
 };
 
-const downloadCourseList = async (page) => {
-  const slugs = await page.evaluate(() => {
-    const anchors = document.querySelectorAll('h2.title a');
-    return Array.from(anchors)
-      .map((a) => a.href)
-      .map((url) =>
-        url.replace('https://frontendmasters.com/courses/', '').replace('/', '')
-      )
-      .sort((s1, s2) => s1.localeCompare(s2));
-  });
+const downloadCourseList = async () => {
+  const getPage = promisify(request.get);
+  const page = await getPage('https://frontendmasters.com/courses/');
+
+  const $ = cheerio.load(page.body);
+  const anchors = $('h2.title a')
+    .map((i, el) => el.attribs.href)
+    .get();
+
+  const slugs = anchors
+    .map((url) => url.replace('/courses/', '').replace('/', ''))
+    .sort((s1, s2) => s1.localeCompare(s2));
 
   return slugs;
 };

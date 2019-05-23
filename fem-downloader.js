@@ -1,19 +1,10 @@
-const fs = require('fs');
-const path = require('path');
 const { init } = require('./api');
-const {
-  femLogin,
-  femGoto,
-  buildDirTree,
-  downloadVideos,
-  setup,
-  downloadCourseList
-} = require('./fem');
+const { femLogin, femGoto, buildDirTree, downloadVideos } = require('./fem');
 const inquirer = require('inquirer');
-const chalk = require('chalk');
+
 const fuzzy = require('fuzzy');
 const log = console.log.bind(console);
-
+const { getCourseList } = require('./course-log');
 inquirer.registerPrompt(
   'autocomplete',
   require('inquirer-autocomplete-prompt')
@@ -51,27 +42,7 @@ const questions = [
     message: 'Please insert course slug:',
     name: 'slug',
     source: async function(_, input) {
-      if (!fs.existsSync(path.join(__dirname, 'courses.js'))) {
-        // Downloads the course list (which is public)
-        // Login is not required
-        console.log(
-          chalk.yellow(
-            "Downloading courses list, please be patient: it won't take long\n"
-          )
-        );
-        const { browser, page } = await setup();
-        await page.goto('https://frontendmasters.com/courses/', {
-          timeout: 25000,
-          waitUntil: ['domcontentloaded']
-        });
-        const courseSlugs = await downloadCourseList(page);
-        fs.writeFileSync(
-          path.join(__dirname, 'courses.js'),
-          `module.exports = ${JSON.stringify(courseSlugs, null, 2)}`
-        );
-        await browser.close();
-      }
-      const courses = require(path.join(__dirname, 'courses'));
+      const courses = await getCourseList();
       const filtered = fuzzy
         .filter(input, courses)
         .map((res) => res.string)

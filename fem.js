@@ -70,19 +70,19 @@ const downloadSubtitles = async (
       );
 
       return Promise.resolve(
-        `${partialUrl}/${courseIndex}-${lessonSlug}.web_vtt`
+        `${partialUrl}/${courseIndex}-${lessonSlug}.vtt`
       );
     }, index);
 
     const subtitlesFile = fs.createWriteStream(
-      `./${courseSlug}/${group}/${index}-${lesson}.web_vtt`
+      `./${courseSlug}/${group}/${index}-${lesson}.vtt`
     );
 
     return new Promise((resolve, reject) => {
       https.get(subtitlesUrl, function(resp) {
         console.log(
           chalk.dim(
-            `\n${new Date().toLocaleTimeString()}: Downloading: ${index}-${lesson}.web_vtt (subtitles)`
+            `\n${new Date().toLocaleTimeString()}: Downloading: ${index}-${lesson}.vtt (subtitles)`
           )
         );
 

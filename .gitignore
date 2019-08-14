@@ -1,3 +1,4 @@
 node_modules/
 dist/
 courses.js
+.env.test

@@ -73,7 +73,7 @@ describe('Download subtitles', () => {
     await browser.close();
 
     const expectedPath =
-      './test-subtitles-download/0-intro/11-anything.web_vtt';
+      './test-subtitles-download/0-intro/11-anything.vtt';
     expect(fs.existsSync(expectedPath)).toBe(true);
     const { size } = fs.statSync(expectedPath);
     expect(size).toBeGreaterThan(0);

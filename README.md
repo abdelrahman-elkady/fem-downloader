@@ -9,6 +9,8 @@
 
 Based on Nodejs and Puppeteer, you can launch it from the command line providing your credentials and it will download the course of your choice.
 
+💓 New feature: **[read credentials from config files](#configuration)**
+
 💓 New feature: **auto-completion** of course titles!
 
 💓 New feature: **subtitles downloads**
@@ -63,6 +65,17 @@ Once the download starts you'll be shown a progress bar for the current lesson:
 3.  The course will be downloaded into the project root, in its own folder, and each lesson will have its slug name.
 4.  Each lesson group will have its separate folder and each lesson will be prepended with a number reflecting its order.
 
+### Configuration
+
+You can supply configuration through rc files, you can create a `.fmdlrc` file relative to your project or just under your home directory with the following supported configuration
+
+```json
+{
+  "username": "john@doe.com",
+  "password": "top-secret"
+}
+```
+
 ## ⚠ Warning
 
 I strongly encourage you to **limit the download bandwidth** at 100Kb/250Kb to reduce the risk of your account being suspended. See issue [#3](https://github.com/cristian-gabbanini/fem-downloader/issues/3).
@@ -89,7 +102,7 @@ https://www.patreon.com/join/cristiangabbanini/
 
 ## License
 
-```bash
+```
 Copyright (c) Cristian Gabbanini - https://github.com/cristian-gabbanini
 
 MIT License
